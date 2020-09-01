@@ -33,11 +33,27 @@ def create_app(config_name):
     migrate = Migrate(app, db)
 
     from app import models
+
     from .auth import auth as auth_blueprint
 
     app.register_blueprint(auth_blueprint)
 
+    from .user import user as user_blueprint
+
+    app.register_blueprint(user_blueprint)
+
     # Errors
+    @app.errorhandler(400)
+    def bad_request(e):
+        log.error(e)
+        return jsonify(error=str(e)), 400
+
+    # Errors
+    @app.errorhandler(401)
+    def unauthorized(e):
+        log.error(e)
+        return jsonify(error=str(e)), 401
+
     @app.errorhandler(403)
     def forbidden(e):
         log.error(e)
@@ -47,6 +63,11 @@ def create_app(config_name):
     def page_not_found(e):
         log.error(e)
         return jsonify(error=str(e)), 404
+
+    @app.errorhandler(405)
+    def not_logged(e):
+        log.error(e)
+        return jsonify(error=str(e)), 405
 
     @app.errorhandler(500)
     def internal_server_error(e):

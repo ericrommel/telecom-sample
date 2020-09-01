@@ -27,10 +27,11 @@ class Employee(UserMixin, db.Model):
         Check if hashed password matches with actual password
         """
 
-        log.info(f"Verify password: {self.password_hash} - {password}")
+        log.info("Check if the password is correct")
         return check_password_hash(self.password_hash, password)
 
     def __init__(self, first_name, last_name, email, username, password, is_admin=False):
+        log.info("Create an employee instance")
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -45,7 +46,7 @@ class Employee(UserMixin, db.Model):
 class EmployeeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         # Fields to expose
-        fields = ("first_name", "last_name", "email", "username", "is_admin")
+        fields = ("id", "first_name", "last_name", "email", "username", "is_admin")
         model = Employee
         load_instance = True
 
@@ -68,7 +69,7 @@ class DidNumber(db.Model):
 
     __tablename__ = "didnumbers"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     value = db.Column(db.String(17), unique=True)
     monthly_price = db.Column(db.Float)
     setup_price = db.Column(db.Float)
@@ -88,7 +89,7 @@ class DidNumber(db.Model):
 class DidNumberSchema(ma.Schema):
     class Meta:
         # Fields to expose
-        fields = ("value", "monthly_price", "setup_price", "currency")
+        fields = ("id", "value", "monthly_price", "setup_price", "currency")
         model = DidNumber
         load_instance = True
 
