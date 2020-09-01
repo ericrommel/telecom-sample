@@ -17,6 +17,7 @@ marshmallow-sqlalchemy = "*"
 marshmallow = "*"
 flask-migrate = "*"
 colorlog = "*"
+flask-testing = "*"
 
 [requires]
 python_version = "3.8"
