@@ -3,10 +3,10 @@ from flask_login import current_user, login_required
 
 from . import user
 from .. import db
-from ..models import DidNumber, did_number_schema, did_numbers_schema, Employee, employees_schema
+from ..models import DidNumber, did_number_schema, did_numbers_schema, Employee, employee_schema, employees_schema
 from log import Log
 
-log = Log("evolux-project").get_logger(logger_name="views")
+log = Log("evolux-project").get_logger(logger_name="user-views")
 
 
 def check_admin():
@@ -33,14 +33,14 @@ def list_didnumbers():
     return jsonify(result), 200
 
 
-# endpoint to get user detail by id
 @user.route("/didnumbers/<int:id>", methods=["GET"])
+@login_required
 def didnumber_detail(id):
     """
     List details for a DID number
     """
 
-    did_number = DidNumber.query.get(id)
+    did_number = DidNumber.query.get_or_404(id)
     return did_number_schema.jsonify(did_number)
 
 
@@ -145,3 +145,15 @@ def list_employees():
 
     result = employees_schema.dump(all_employees)
     return jsonify(result), 200
+
+
+@user.route("/employees/<int:id>")
+@login_required
+def employee_detail(id):
+    """
+    List details for an employee
+    """
+
+    check_admin()
+    employee = Employee.query.get_or_404(id)
+    return employee_schema.jsonify(employee)

@@ -7,7 +7,7 @@ from .. import db
 from ..models import Employee, employee_schema
 from log import Log
 
-log = Log("evolux-project").get_logger(logger_name="views")
+log = Log("evolux-project").get_logger(logger_name="auth-views")
 
 
 @auth.route("/signup", methods=["GET", "POST"])

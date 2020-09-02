@@ -18,6 +18,7 @@ marshmallow = "*"
 flask-migrate = "*"
 colorlog = "*"
 flask-testing = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.8"

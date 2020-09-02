@@ -19,7 +19,7 @@ def create_app(config_name):
     log.info("Create app")
     app = Flask(__name__, instance_relative_config=True)
     log.info("Get configs")
-    app.config.from_object(app_config[config_name])
+    # app.config.from_object(app_config[config_name])
     app.config.from_pyfile("config.py")  # from /instance
 
     log.info("Initialize the application for the use with its setup DB")
