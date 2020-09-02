@@ -94,22 +94,42 @@ class TestBase(TestCase):
         return json.loads(response.data.decode("utf8"))
 
     def generic_put(self, url, a_dict):
+        """
+        Generic PUT request
+        """
+
         return self.client.put(url, data=json.dumps(a_dict), content_type="application/json", follow_redirects=True)
 
     def generic_post(self, url, a_dict):
+        """
+        Generic POST request
+        """
+
         return self.client.post(url, data=json.dumps(a_dict), content_type="application/json", follow_redirects=True)
 
     def signup(self, a_dict):
+        """
+        Sign up request
+        """
+
         return self.client.post(
             url_for("auth.signup"), data=json.dumps(a_dict), content_type="application/json", follow_redirects=True
         )
 
     def login(self, a_dict):
+        """
+        Logo in request
+        """
+
         return self.client.post(
             url_for("auth.login"), data=json.dumps(a_dict), content_type="application/json", follow_redirects=True
         )
 
     def logout(self):
+        """
+        Log out request
+        """
+
         return self.client.get(url_for("auth.logout"), follow_redirects=True)
 
 

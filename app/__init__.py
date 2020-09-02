@@ -19,13 +19,13 @@ def create_app(config_name):
     log.info("Create app")
     application = Flask(__name__, instance_relative_config=True)
     log.info("Get configs")
-    # app.config.from_object(app_config[config_name])
+    application.config.from_object(app_config[config_name])
     application.config.from_pyfile("config.py")  # from /instance
 
     log.info("Initialize the application for the use with its setup DB")
     db.init_app(application)
 
-    log.info("Register and and attach the `LoginManager`")
+    log.info("Register and attach the `LoginManager`")
     login_manager.init_app(application)
     login_manager.login_message = "You must be logged in to access this page"
     login_manager.login_view = "auth.login"

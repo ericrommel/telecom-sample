@@ -1,7 +1,8 @@
-import sqlite3
+import json
 
-from flask import abort, jsonify, request
+from flask import abort, jsonify, request, url_for
 from flask_login import current_user, login_required
+from sqlalchemy.exc import OperationalError, IntegrityError, InvalidRequestError
 
 from . import user
 from .. import db
@@ -20,19 +21,76 @@ def check_admin():
         abort(403, "The current user is not an admin")
 
 
+def get_paginated_list(klass, url: str, start: int, limit: int) -> dict:
+    """
+    Paginate response.
+    Based on: https://aviaryan.com/blog/gsoc/paginated-apis-flask
+    """
+
+    # check if page exists
+    results = klass
+    count = len(results)
+    if not isinstance(start, int):
+        start = int(start)
+
+    if not isinstance(limit, int):
+        limit = int(limit)
+
+    if count < start:
+        abort(404)
+
+    # make response
+    obj = {"start": start, "limit": limit, "count": count}
+
+    log.info("Build the urls to return")
+    # make previous url
+    if start == 1:
+        obj["previous"] = ""
+    else:
+        start_copy = max(1, start - limit)
+        limit_copy = start - 1
+        obj["previous"] = url + "?start=%d&limit=%d" % (start_copy, limit_copy)
+
+    # make next url
+    if start + limit > count:
+        obj["next"] = ""
+    else:
+        start_copy = start + limit
+        obj["next"] = url + "?start=%d&limit=%d" % (start_copy, limit)
+
+    log.info("Extract result according to the bounds")
+    obj["results"] = results[(start - 1) : (start - 1 + limit)]
+    return obj
+
+
 # DID number views
-@user.route("/didnumbers", methods=["GET"])
+@user.route("/didnumbers")
+@user.route("/didnumbers/page/<int:page>")
 @login_required
-def list_didnumbers():
+def list_didnumbers(page=1, per_page=20):
     """
     List all DID numbers
     """
 
-    log.info("Return the list of DID numbers")
-    all_did_numbers = DidNumber.query.all()
+    try:
+        log.info("Get the list of DID numbers from the database")
+        all_did_numbers = did_numbers_schema.dump(DidNumber.query.order_by(DidNumber.id.asc()))
+    except OperationalError:
+        log.info("There is no DID numbers in the database")
+        all_did_numbers = None
 
-    result = did_numbers_schema.dump(all_did_numbers)
-    return jsonify(result), 200
+    if all_did_numbers is None:
+        return jsonify({"warning": "There is no data to show"})
+
+    data = get_paginated_list(
+        klass=all_did_numbers,
+        url=url_for("user.list_didnumbers"),
+        start=request.args.get("start", page),
+        limit=request.args.get("limit", per_page),
+    )
+
+    log.info("Response the list of DID numbers")
+    return jsonify(data)
 
 
 @user.route("/didnumbers/<int:id>", methods=["GET"])
@@ -76,10 +134,14 @@ def add_didnumber():
         log.info(f"Add DID number {did_number.value} to the database")
         db.session.add(did_number)
         db.session.commit()
-    except Exception:
+    except IntegrityError:
         # in case DID number value already exists
         log.error(f"DID number value {value} already exists in the database")
         abort(403, "DID Number value already exists in the database.")
+    except Exception as e:
+        # in case DID number value already exists
+        log.error(f"Unknown Exception: {e}")
+        abort(500, e)
 
     return did_number_schema.jsonify(did_number), 201
 
@@ -107,11 +169,16 @@ def edit_did_number(id):
     try:
         # Edit DID number in the database
         log.info(f"Edit DID number {did_number.value} in the database")
+        db.session.add(did_number)
         db.session.commit()
-    except Exception:
+    except (IntegrityError, InvalidRequestError):
         # in case DID number value already exists
         log.error(f"DID Number value {did_number.value} already exists.")
-        abort(500, "DID Number value already exists.")
+        abort(400, "DID Number value already exists.")
+    except Exception as e:
+        # in case DID number value already exists
+        log.error(f"Unknown Exception: {e}")
+        abort(500, e)
 
     return did_number_schema.jsonify(did_number), 200
 

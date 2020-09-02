@@ -1,3 +1,4 @@
+from flask import url_for
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -74,6 +75,20 @@ class DidNumber(db.Model):
     monthly_price = db.Column(db.Float)
     setup_price = db.Column(db.Float)
     currency = db.Column(db.String(3))
+
+    def get_url(self):
+        return url_for("user.list_didnumbers", id=self.id, _external=True)
+
+    def serialize(self):
+        data = {
+            "id": self.id,
+            "value": self.value,
+            "monthly_price": self.monthly_price,
+            "setup_price": self.setup_price,
+            "currency": self.currency,
+        }
+
+        return data
 
     def __init__(self, value, monthly_price, setup_price, currency):
         log.info("Create a DID number instance")
