@@ -54,15 +54,15 @@ def add_didnumber():
     """
 
     log.info("Set variables from request")
-    value, monthly_price, setup_price, currency = '', '', '', ''
+    value, monthly_price, setup_price, currency = "", "", "", ""
     try:
         value = request.json["value"]
         monthly_price = request.json["monthlyPrice"]
         setup_price = request.json["setupPrice"]
         currency = request.json["currency"]
     except KeyError as e:
-        log.error(f'KeyError: {e}')
-        abort(400, f'There is no key with that value: {e}')
+        log.error(f"KeyError: {e}")
+        abort(400, f"There is no key with that value: {e}")
 
     did_number = DidNumber(
         value=value,
@@ -101,8 +101,8 @@ def edit_did_number(id):
         did_number.setup_price = request.json["setupPrice"]
         did_number.currency = request.json["currency"]
     except KeyError as e:
-        log.error(f'KeyError: {e}')
-        abort(400, f'There is no key with that value: {e}')
+        log.error(f"KeyError: {e}")
+        abort(400, f"There is no key with that value: {e}")
 
     try:
         # Edit DID number in the database

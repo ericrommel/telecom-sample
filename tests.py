@@ -91,45 +91,26 @@ class TestBase(TestCase):
         Decode json from response
         """
 
-        return json.loads(response.data.decode('utf8'))
+        return json.loads(response.data.decode("utf8"))
 
     def generic_put(self, url, a_dict):
-        return self.client.put(
-            url,
-            data=json.dumps(a_dict),
-            content_type='application/json',
-            follow_redirects=True
-        )
+        return self.client.put(url, data=json.dumps(a_dict), content_type="application/json", follow_redirects=True)
 
     def generic_post(self, url, a_dict):
-        return self.client.post(
-            url,
-            data=json.dumps(a_dict),
-            content_type='application/json',
-            follow_redirects=True
-        )
+        return self.client.post(url, data=json.dumps(a_dict), content_type="application/json", follow_redirects=True)
 
     def signup(self, a_dict):
         return self.client.post(
-            url_for('auth.signup'),
-            data=json.dumps(a_dict),
-            content_type='application/json',
-            follow_redirects=True
+            url_for("auth.signup"), data=json.dumps(a_dict), content_type="application/json", follow_redirects=True
         )
 
     def login(self, a_dict):
         return self.client.post(
-            url_for('auth.login'),
-            data=json.dumps(a_dict),
-            content_type='application/json',
-            follow_redirects=True
+            url_for("auth.login"), data=json.dumps(a_dict), content_type="application/json", follow_redirects=True
         )
 
     def logout(self):
-        return self.client.get(
-            url_for('auth.logout'),
-            follow_redirects=True
-        )
+        return self.client.get(url_for("auth.logout"), follow_redirects=True)
 
 
 class TestModels(TestBase):
@@ -155,12 +136,12 @@ class TestViews(TestBase):
         """
 
         a_dict = dict(
-            email='test@test.com',
-            username='test',
-            first_name='test',
-            last_name='test',
-            password='123456',
-            is_admin=False
+            email="test@test.com",
+            username="test",
+            first_name="test",
+            last_name="test",
+            password="123456",
+            is_admin=False,
         )
         response = self.signup(a_dict)
         self.assertEqual(response.status_code, 201)
@@ -170,7 +151,7 @@ class TestViews(TestBase):
         Test that a login can be done with right credentials
         """
 
-        a_dict = dict(email='non-admin@admin.com', password='123456')
+        a_dict = dict(email="non-admin@admin.com", password="123456")
         response = self.login(a_dict)
         self.assertEqual(response.status_code, 200)
 
@@ -179,7 +160,7 @@ class TestViews(TestBase):
         Test that a login cannot be done with wrong credentials
         """
 
-        a_dict = dict(email='non-admin@admin.com', password='654321')
+        a_dict = dict(email="non-admin@admin.com", password="654321")
         response = self.login(a_dict)
         self.assertEqual(response.status_code, 401)
 
@@ -196,7 +177,7 @@ class TestViews(TestBase):
         Test that logout cannot be done without a login before
         """
 
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         response = self.logout()
         self.assertEqual(response.status_code, 200)
 
@@ -217,7 +198,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.list_didnumbers")
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 200)
 
@@ -238,7 +219,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.didnumber_detail", id=1)
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 200)
 
@@ -248,7 +229,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.didnumber_detail", id=1000)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 404)
 
@@ -269,7 +250,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.add_didnumber")
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         a_dict = dict(
             value="+55 84 91234-0000",
             monthlyPrice="0.06",
@@ -285,7 +266,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.add_didnumber")
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         a_dict = dict(
             value="+55 84 91234-4320",
             monthlyPrice="0.06",
@@ -301,7 +282,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.add_didnumber")
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         a_dict = dict(
             value=123456,
             monthlyPrice="0.06",
@@ -328,7 +309,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.edit_did_number", id=1)
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         a_dict = dict(
             value="+55 84 91234-0000",
             monthlyPrice="0.06",
@@ -344,7 +325,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.edit_did_number", id=1)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         a_dict = dict(
             value="+55 84 91234-0000",
             monthlyPrice="0.06",
@@ -360,7 +341,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.edit_did_number", id=1000)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.put(target_url)
         self.assertEqual(response.status_code, 404)
 
@@ -376,7 +357,7 @@ class TestViews(TestBase):
             setupPrice="3.49",
             currency="U$",
         )
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.generic_put(target_url, a_dict)
         self.assertEqual(response.status_code, 500)
 
@@ -397,7 +378,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.delete_did_number", id=1)
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         response = self.client.delete(target_url)
         self.assertEqual(response.status_code, 403)
 
@@ -407,7 +388,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.delete_did_number", id=1)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.delete(target_url)
         self.assertEqual(response.status_code, 200)
 
@@ -417,7 +398,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.delete_did_number", id=1000)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.delete(target_url)
         self.assertEqual(response.status_code, 404)
 
@@ -438,7 +419,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.list_employees")
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 403)
 
@@ -448,7 +429,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.list_employees")
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 200)
 
@@ -469,7 +450,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.list_employees", id=1)
-        self.login(dict(email='non-admin@admin.com', password='123456'))
+        self.login(dict(email="non-admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 403)
 
@@ -479,7 +460,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.list_employees", id=1)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 200)
 
@@ -489,7 +470,7 @@ class TestViews(TestBase):
         """
 
         target_url = url_for("user.employee_detail", id=1000)
-        self.login(dict(email='admin@admin.com', password='123456'))
+        self.login(dict(email="admin@admin.com", password="123456"))
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 404)
 
