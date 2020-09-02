@@ -1,0 +1,1709 @@
+{
+	"info": {
+		"_postman_id": "8e178720-c727-40a3-ad6a-424f81f1bd0d",
+		"name": "Evolux",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sign up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b433c5c-6e45-4040-b63f-245cc53f1434",
+						"exec": [
+							"pm.test(\"Response code is 201\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is Created\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'CREATED');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b26e0335-f489-4735-82cf-3d7d795ddab2",
+						"exec": [
+							"// Email generator\r",
+							"randomail = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);\r",
+							"\r",
+							"pm.environment.set('employeeUsername', randomail)\r",
+							"\r",
+							"randomail += \"@email.com\"\r",
+							"pm.environment.set(\"employeeEmail\", randomail);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{employeeEmail}}\",\r\n    \"username\": \"{{employeeUsername}}\",\r\n    \"first_name\": \"First Name\",\r\n    \"last_name\": \"Last Name\",\r\n    \"password\": \"123456\",\r\n    \"is_admin\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/signup",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (invalid user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2dac237c-b82c-4f08-a2d7-11882f96636c",
+						"exec": [
+							"pm.test(\"Response code is 401\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is UNAUTHORIZED\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'UNAUTHORIZED');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '401 Unauthorized: Invalid email or password.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"401 Unauthorized: Invalid email or password.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"invalid-user@email.com\",\r\n    \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (invalid password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9c54ff8-71fd-445d-85ae-f8e56d9af8ae",
+						"exec": [
+							"pm.test(\"Response code is 401\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is UNAUTHORIZED\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'UNAUTHORIZED');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '401 Unauthorized: Invalid email or password.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"401 Unauthorized: Invalid email or password.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{employeeEmail\",\r\n    \"password\": \"0123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b6286d39-53d3-48ff-b980-76ba4de03257",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{employeeEmail}}\",\r\n    \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log out",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2bae71ae-87b6-4b04-ae9d-b453d6edfa5f",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be 'You have successfully been logged out.'\", function () {\r",
+							"    pm.expect(pm.response.json().message).to.be.eq(\"You have successfully been logged out.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/logout",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List DID numbers (not logged in)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1fb6d090-1573-4406-a158-ee01591daa73",
+						"exec": [
+							"pm.test(\"Response code is 401\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is UNAUTHORIZED\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'UNAUTHORIZED');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '401 Unauthorized: It looks like you are not logged in yet.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"401 Unauthorized: It looks like you are not logged in yet.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "22f3ce47-5ccb-44e5-81a6-63e01a2cdd88",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{employeeEmail}}\",\r\n    \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a DID Number",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5374e1d3-2df4-43d6-845d-ec6f6892a1c5",
+						"exec": [
+							"pm.test(\"Response code is 201\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is CREATED\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'CREATED');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "95f51ad2-b8b3-47d6-b7ef-b146fd3951a5",
+						"exec": [
+							"// Phone generator\r",
+							"function generatePhone(ddd) {\r",
+							"\tvar n = 9;\r",
+							"\tvar n1 = 9;\r",
+							"\tvar n2 = randomiza(n);\r",
+							"\tvar n3 = randomiza(n);\r",
+							"\tvar n4 = randomiza(n);\r",
+							"\tvar n5 = randomiza(n);\r",
+							"\tvar n6 = randomiza(n);\r",
+							"\tvar n7 = randomiza(n);\r",
+							"\tvar n8 = randomiza(n);\r",
+							"\tvar n9 = randomiza(n);\r",
+							"\r",
+							"\treturn `+55 ${ddd} ${n1}${n2}${n3}${n4}${n5}-${n6}${n7}${n8}${n9}`;\r",
+							"}\r",
+							"\r",
+							"function randomiza(n) {\r",
+							"\tvar ranNum = Math.round(Math.random() * n);\r",
+							"\treturn ranNum;\r",
+							"}\r",
+							"\r",
+							"function generate_a_request_value() {\r",
+							"    var min_integer_part = 0\r",
+							"    var max_integer_part = 50\r",
+							"    var random_integer_part = (Math.floor(Math.random() * (max_integer_part - min_integer_part)) + min_integer_part).toString()\r",
+							"    \r",
+							"    var min_decimal_part = 0\r",
+							"    var max_decimal_part = 100\r",
+							"    var random_decimal_part = (Math.floor(Math.random() * (max_decimal_part - min_decimal_part)) + min_decimal_part).toString()\r",
+							"    \r",
+							"    return random_integer_part + \".\" + random_decimal_part\r",
+							"}\r",
+							"\r",
+							"pm.environment.set('didNumberMonthlyPrice', generate_a_request_value())\r",
+							"\r",
+							"pm.environment.set('didNumberSetupPrice', generate_a_request_value())\r",
+							"\r",
+							"pm.environment.set(\"didNumberValue\", generatePhone(84));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/add",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a DID Number (same value)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5f8cec2-ba08-4c23-9d19-50e4f609ece3",
+						"exec": [
+							"pm.test(\"Response code is 403\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 403);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is FORBIDDEN\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'FORBIDDEN');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '403 Forbidden: DID Number value already exists in the database.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"403 Forbidden: DID Number value already exists in the database.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/add",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List DID numbers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "09cc077a-63c0-4db0-8a08-110b0e331e09",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json()\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(data).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"for (var i of data.results) {\r",
+							"    pm.environment.set('didNumberId', i.id);\r",
+							"    break\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers?limit=25&start=1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "25"
+						},
+						{
+							"key": "start",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Detail a DID number",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a57d8ab0-f3fa-471b-9dc7-d67a31d87428",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"didNumberValue\", pm.response.json().value)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit a DID Number (no admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "20f958e8-8232-4c2e-b44d-ae7797482df0",
+						"exec": [
+							"pm.test(\"Response code is 403\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 403);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is FORBIDDEN\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'FORBIDDEN');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '403 Forbidden: The current user is not an admin'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"403 Forbidden: The current user is not an admin\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3b10270c-8843-40fa-87d7-88a1def53761",
+						"exec": [
+							"function generate_a_request_value() {\r",
+							"    var min_integer_part = 0\r",
+							"    var max_integer_part = 50\r",
+							"    var random_integer_part = (Math.floor(Math.random() * (max_integer_part - min_integer_part)) + min_integer_part).toString()\r",
+							"    \r",
+							"    var min_decimal_part = 0\r",
+							"    var max_decimal_part = 100\r",
+							"    var random_decimal_part = (Math.floor(Math.random() * (max_decimal_part - min_decimal_part)) + min_decimal_part).toString()\r",
+							"    \r",
+							"    return random_integer_part + \".\" + random_decimal_part\r",
+							"}\r",
+							"\r",
+							"pm.environment.set('didNumberMonthlyPrice', generate_a_request_value())\r",
+							"\r",
+							"pm.environment.set('didNumberSetupPrice', generate_a_request_value())"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/edit/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"edit",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a DID Number (no admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "38505c83-9df6-4f96-8c9e-b47e34854d7b",
+						"exec": [
+							"pm.test(\"Response code is 403\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 403);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is FORBIDDEN\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'FORBIDDEN');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '403 Forbidden: The current user is not an admin'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"403 Forbidden: The current user is not an admin\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/delete/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"delete",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List employees (no admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9415afe8-6d76-41e1-8d95-0e64b08a3d62",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up (an admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adc0256e-1d25-4cde-8aa7-45a50b812d35",
+						"exec": [
+							"pm.test(\"Response code is 201\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is Created\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'CREATED');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "52c20618-8eb4-4855-9ecb-34ea9d3cfc83",
+						"exec": [
+							"// Email generator\r",
+							"randomail = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);\r",
+							"\r",
+							"pm.environment.set('employeeAdminUsername', randomail)\r",
+							"\r",
+							"randomail += \"@email.com\"\r",
+							"pm.environment.set(\"employeeAdminEmail\", randomail);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{employeeAdminEmail}}\",\r\n    \"username\": \"{{employeeAdminUsername}}\",\r\n    \"first_name\": \"First Name\",\r\n    \"last_name\": \"Last Name\",\r\n    \"password\": \"123456\",\r\n    \"is_admin\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/signup",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in (an admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2d99d847-c3e8-4208-9d53-8890a0fcbe5d",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{employeeAdminEmail}}\",\r\n    \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List DID numbers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a267c65b-1ed8-4488-b8b5-787f7b47220a",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json()\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(data).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"len = data.length\r",
+							"count = 1\r",
+							"for (var i of data.results) {\r",
+							"    if (count === len) {\r",
+							"        pm.environment.set('didNumberId', i.id);\r",
+							"        pm.environment.set('didNumberValue', i.value)\r",
+							"        break\r",
+							"    }\r",
+							"    count++;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers?start=1&limit=25",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit a DID Number",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "36c48a6e-45a3-4902-a086-033e2d272833",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "34f6c75f-801c-47e6-b4a3-2089f2d3207e",
+						"exec": [
+							"function generate_a_request_value() {\r",
+							"    var min_integer_part = 0\r",
+							"    var max_integer_part = 50\r",
+							"    var random_integer_part = (Math.floor(Math.random() * (max_integer_part - min_integer_part)) + min_integer_part).toString()\r",
+							"    \r",
+							"    var min_decimal_part = 0\r",
+							"    var max_decimal_part = 100\r",
+							"    var random_decimal_part = (Math.floor(Math.random() * (max_decimal_part - min_decimal_part)) + min_decimal_part).toString()\r",
+							"    \r",
+							"    return random_integer_part + \".\" + random_decimal_part\r",
+							"}\r",
+							"\r",
+							"pm.environment.set('didNumberMonthlyPrice', generate_a_request_value())\r",
+							"\r",
+							"pm.environment.set('didNumberSetupPrice', generate_a_request_value())"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/edit/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"edit",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit a DID Number (with a new DID number value)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0525ae73-dcac-460d-a3df-10b4d2c71817",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c4445e5-a73a-4d23-b82a-5a990746989f",
+						"exec": [
+							"// Phone generator\r",
+							"function generatePhone(ddd) {\r",
+							"\tvar n = 9;\r",
+							"\tvar n1 = 9;\r",
+							"\tvar n2 = randomiza(n);\r",
+							"\tvar n3 = randomiza(n);\r",
+							"\tvar n4 = randomiza(n);\r",
+							"\tvar n5 = randomiza(n);\r",
+							"\tvar n6 = randomiza(n);\r",
+							"\tvar n7 = randomiza(n);\r",
+							"\tvar n8 = randomiza(n);\r",
+							"\tvar n9 = randomiza(n);\r",
+							"\r",
+							"\treturn `+55 ${ddd} ${n1}${n2}${n3}${n4}${n5}-${n6}${n7}${n8}${n9}`;\r",
+							"}\r",
+							"\r",
+							"function randomiza(n) {\r",
+							"\tvar ranNum = Math.round(Math.random() * n);\r",
+							"\treturn ranNum;\r",
+							"}\r",
+							"\r",
+							"function generate_a_request_value() {\r",
+							"    var min_integer_part = 0\r",
+							"    var max_integer_part = 50\r",
+							"    var random_integer_part = (Math.floor(Math.random() * (max_integer_part - min_integer_part)) + min_integer_part).toString()\r",
+							"    \r",
+							"    var min_decimal_part = 0\r",
+							"    var max_decimal_part = 100\r",
+							"    var random_decimal_part = (Math.floor(Math.random() * (max_decimal_part - min_decimal_part)) + min_decimal_part).toString()\r",
+							"    \r",
+							"    return random_integer_part + \".\" + random_decimal_part\r",
+							"}\r",
+							"\r",
+							"pm.environment.set('didNumberMonthlyPrice', generate_a_request_value())\r",
+							"\r",
+							"pm.environment.set('didNumberSetupPrice', generate_a_request_value())\r",
+							"\r",
+							"pm.environment.set(\"didNumberValue\", generatePhone(84));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/edit/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"edit",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit a DID Number (no exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a2b77bf9-5837-4f21-8d9d-1b63de9e926a",
+						"exec": [
+							"pm.test(\"Response code is 404\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is NOT FOUND\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'NOT FOUND');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/edit/100000",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"edit",
+						"100000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List DID numbers (get a different DID number value)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e364df4c-5b4b-4c5c-b618-e690abda993c",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json()\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(data).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"for (var i of data.results) {\r",
+							"    pm.environment.set('didNumberId', i.id);\r",
+							"    break\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers?start=1&limit=25",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit a DID Number (using a number that already exists)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "605d6684-f80c-48a7-a51a-616a5cdfb319",
+						"exec": [
+							"pm.test(\"Response code is 500\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is INTERNAL SERVER ERROR\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'INTERNAL SERVER ERROR');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"value\": \"{{didNumberValue}}\",\r\n  \"monthlyPrice\": \"{{didNumberMonthlyPrice}}\",\r\n  \"setupPrice\": \"{{didNumberSetupPrice}}\",\r\n  \"currency\": \"U$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/edit/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"edit",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List DID numbers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "34f6a5b8-61b7-4c2b-b513-2e270b13d99c",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json()\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(data).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"len = data.length\r",
+							"\r",
+							"for (var i of data.results) {\r",
+							"    pm.environment.set('didNumberId', i.id);\r",
+							"    break\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers?start=1&limit=25",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a DID Number",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "16dd63af-ae82-4ef0-adad-1af1de1fc651",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be 'The DID number has successfully been deleted.'\", function () {\r",
+							"    pm.expect(pm.response.json().message).to.be.eq(\"The DID number has successfully been deleted.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/delete/{{didNumberId}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"delete",
+						"{{didNumberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a DID Number (no exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "303f6d35-467c-482e-bb0b-b08ae20a67ff",
+						"exec": [
+							"pm.test(\"Response code is 404\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is NOT FOUND\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'NOT FOUND');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/didnumbers/delete/100000",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"didnumbers",
+						"delete",
+						"100000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List employees",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c63df8e2-de3a-4a8e-a0a7-e94eafd31f75",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/employees",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Detail an employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cf5d6179-586e-40fb-92f9-4f233b220c17",
+						"exec": [
+							"pm.test(\"Response code is 200\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is OK\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/employees/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"employees",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Detail an employee (no exist)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "865685dc-8c63-4b0e-b9b2-0a4166ad0107",
+						"exec": [
+							"pm.test(\"Response code is 404\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('code', 404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status is NOT FOUND\", function() {\r",
+							"    pm.expect(pm.response).to.have.property('status', 'NOT FOUND');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response Body is not empty\", function () {\r",
+							"    pm.expect(pm.response.json()).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message should be '404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.'\", function () {\r",
+							"    pm.expect(pm.response.json().error).to.be.eq(\"404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/employees/1000",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"employees",
+						"1000"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
