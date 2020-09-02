@@ -1,3 +1,5 @@
+import sqlite3
+
 from flask import abort, jsonify, request
 from flask_login import current_user, login_required
 
@@ -15,7 +17,7 @@ def check_admin():
     """
 
     if not current_user.is_admin:
-        abort(403)
+        abort(403, "The current user is not an admin")
 
 
 # DID number views
@@ -52,10 +54,15 @@ def add_didnumber():
     """
 
     log.info("Set variables from request")
-    value = request.json["value"]
-    monthly_price = request.json["monthlyPrice"]
-    setup_price = request.json["setupPrice"]
-    currency = request.json["currency"]
+    value, monthly_price, setup_price, currency = '', '', '', ''
+    try:
+        value = request.json["value"]
+        monthly_price = request.json["monthlyPrice"]
+        setup_price = request.json["setupPrice"]
+        currency = request.json["currency"]
+    except KeyError as e:
+        log.error(f'KeyError: {e}')
+        abort(400, f'There is no key with that value: {e}')
 
     did_number = DidNumber(
         value=value,
@@ -74,12 +81,10 @@ def add_didnumber():
         log.error(f"DID number value {value} already exists in the database")
         abort(403, "DID Number value already exists in the database.")
 
-    # result = did_number_schema.dump(did_number)
-    # return jsonify(result), 201
     return did_number_schema.jsonify(did_number), 201
 
 
-@user.route("/didnumbers/edit/<int:id>", methods=["PUT"])
+@user.route("/didnumbers/edit/<int:id>", methods=["GET", "PUT"])
 @login_required
 def edit_did_number(id):
     """
@@ -90,10 +95,14 @@ def edit_did_number(id):
 
     did_number = DidNumber.query.get_or_404(id)
     log.info("Set variables from request")
-    did_number.value = request.json["value"]
-    did_number.monthly_price = request.json["monthlyPrice"]
-    did_number.setup_price = request.json["setupPrice"]
-    did_number.currency = request.json["currency"]
+    try:
+        did_number.value = request.json["value"]
+        did_number.monthly_price = request.json["monthlyPrice"]
+        did_number.setup_price = request.json["setupPrice"]
+        did_number.currency = request.json["currency"]
+    except KeyError as e:
+        log.error(f'KeyError: {e}')
+        abort(400, f'There is no key with that value: {e}')
 
     try:
         # Edit DID number in the database
@@ -102,14 +111,12 @@ def edit_did_number(id):
     except Exception:
         # in case DID number value already exists
         log.error(f"DID Number value {did_number.value} already exists.")
-        abort(403, "DID Number value already exists.")
+        abort(500, "DID Number value already exists.")
 
-    # result = did_number_schema.dump(did_number)
-    # return jsonify(result), 200
     return did_number_schema.jsonify(did_number), 200
 
 
-@user.route("/didnumbers/delete/<int:id>", methods=["DELETE"])
+@user.route("/didnumbers/delete/<int:id>", methods=["GET", "DELETE"])
 @login_required
 def delete_did_number(id):
     """
@@ -124,8 +131,8 @@ def delete_did_number(id):
         db.session.delete(did_number)
         db.session.commit()
     except Exception as e:
-        log.error(f"An exception occurred: {e}")
-        abort(500, "An exception occurred")
+        log.error(f"Unknown Error: {e}")
+        abort(500, e)
 
     return jsonify({"message": "The DID number has successfully been deleted."}), 200
 

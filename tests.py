@@ -2,7 +2,7 @@ import json
 import logging
 import unittest
 import os
-from flask import abort, jsonify, url_for
+from flask import abort, url_for
 from flask_testing import TestCase
 
 from app import create_app, db
@@ -19,7 +19,7 @@ class TestBase(TestCase):
         config_name = "testing"
         app_test = create_app(config_name)
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        SQLALCHEMY_DATABASE_URI = "sqlite:///{}".format(os.path.join(project_dir, "telecom-test.db"))
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(project_dir, 'telecom-test.db')}"
 
         app_test.config.update(SQLALCHEMY_DATABASE_URI=SQLALCHEMY_DATABASE_URI)
         app_test.config.update(PRESERVE_CONTEXT_ON_EXCEPTION=False)
@@ -295,21 +295,21 @@ class TestViews(TestBase):
         response = self.generic_post(target_url, a_dict)
         self.assertEqual(response.status_code, 403)
 
-    # def test_add_invalid_did_number_view(self):
-    #     """
-    #     Test add an invalid DID number
-    #     """
-    #
-    #     target_url = url_for("user.add_didnumber")
-    #     self.login(dict(email='non-admin@admin.com', password='123456'))
-    #     a_dict = dict(
-    #         value=123456,
-    #         monthlyPrice="0.06",
-    #         setupPrice="3.49",
-    #         currency="U$",
-    #     )
-    #     response = self.generic_post(target_url, a_dict)
-    #     self.assertEqual(response.status_code, 500)
+    def test_add_invalid_did_number_view(self):
+        """
+        Test add an invalid DID number
+        """
+
+        target_url = url_for("user.add_didnumber")
+        self.login(dict(email='non-admin@admin.com', password='123456'))
+        a_dict = dict(
+            value=123456,
+            monthlyPrice="0.06",
+            setupPrice="3.49",
+            currency="U$",
+        )
+        response = self.generic_post(target_url, a_dict)
+        self.assertEqual(response.status_code, 500)
 
     def test_edit_did_numbers_without_login_view(self):
         """
@@ -364,22 +364,21 @@ class TestViews(TestBase):
         response = self.client.put(target_url)
         self.assertEqual(response.status_code, 404)
 
-    # def test_edit_did_number_using_value_that_already_exist_view(self):
-    #     """
-    #     Test edit DID number using a value that already exist in the database
-    #     """
-    #
-    #     target_url = url_for("user.edit_did_number", id=1)
-    #     a_dict = dict(
-    #         value="+55 84 91234-4321",
-    #         monthlyPrice="0.06",
-    #         setupPrice="3.49",
-    #         currency="U$",
-    #     )
-    #     self.login(dict(email='admin@admin.com', password='123456'))
-    #     response = self.generic_put(target_url, a_dict)
-    #     print(response.data)
-    #     self.assertEqual(response.status_code, 403)
+    def test_edit_did_number_using_value_that_already_exist_view(self):
+        """
+        Test edit DID number using a value that already exist in the database
+        """
+
+        target_url = url_for("user.edit_did_number", id=1)
+        a_dict = dict(
+            value="+55 84 91234-4321",
+            monthlyPrice="0.06",
+            setupPrice="3.49",
+            currency="U$",
+        )
+        self.login(dict(email='admin@admin.com', password='123456'))
+        response = self.generic_put(target_url, a_dict)
+        self.assertEqual(response.status_code, 500)
 
     def test_delete_did_numbers_without_login_view(self):
         """

@@ -17,12 +17,17 @@ def signup():
     """
 
     log.info("Set employee variables from request")
-    email = request.json["email"]
-    username = request.json["username"]
-    first_name = request.json["first_name"]
-    last_name = request.json["last_name"]
-    password = request.json["password"]
-    is_admin = request.json["is_admin"]
+    email, username, first_name, last_name, password, is_admin = '', '', '', '', '', ''
+    try:
+        email = request.json["email"]
+        username = request.json["username"]
+        first_name = request.json["first_name"]
+        last_name = request.json["last_name"]
+        password = request.json["password"]
+        is_admin = request.json["is_admin"]
+    except KeyError as e:
+        log.error(f'KeyError: {e}')
+        abort(400, f'There is no key with that value: {e}')
 
     if Employee.query.filter_by(email=email).first():
         log.error(f"{email} is already in use.")
@@ -52,8 +57,13 @@ def login():
 
     if request.method == "POST":
         log.info("Set email and password from request")
-        email = request.json["email"]
-        password = request.json["password"]
+        email, password = '', ''
+        try:
+            email = request.json["email"]
+            password = request.json["password"]
+        except KeyError as e:
+            log.error(f'KeyError: {e}')
+            abort(400, f'There is no key with that value: {e}')
 
         # Check if the user exists in the database and if the password entered matches the password in the database
         log.info(f"Check DB for {email}")

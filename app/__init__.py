@@ -17,61 +17,61 @@ login_manager = LoginManager()
 
 def create_app(config_name):
     log.info("Create app")
-    app = Flask(__name__, instance_relative_config=True)
+    application = Flask(__name__, instance_relative_config=True)
     log.info("Get configs")
     # app.config.from_object(app_config[config_name])
-    app.config.from_pyfile("config.py")  # from /instance
+    application.config.from_pyfile("config.py")  # from /instance
 
     log.info("Initialize the application for the use with its setup DB")
-    db.init_app(app)
+    db.init_app(application)
 
     log.info("Register and and attach the `LoginManager`")
-    login_manager.init_app(app)
+    login_manager.init_app(application)
     login_manager.login_message = "You must be logged in to access this page"
     login_manager.login_view = "auth.login"
 
-    migrate = Migrate(app, db)
+    migrate = Migrate(application, db)
 
     from app import models
 
     from .auth import auth as auth_blueprint
 
-    app.register_blueprint(auth_blueprint)
+    application.register_blueprint(auth_blueprint)
 
     from .user import user as user_blueprint
 
-    app.register_blueprint(user_blueprint)
+    application.register_blueprint(user_blueprint)
 
     # Errors
-    @app.errorhandler(400)
+    @application.errorhandler(400)
     def bad_request(e):
         log.error(e)
         return jsonify(error=str(e)), 400
 
     # Errors
-    @app.errorhandler(401)
+    @application.errorhandler(401)
     def unauthorized(e):
         log.error(e)
         return jsonify(error=str(e)), 401
 
-    @app.errorhandler(403)
+    @application.errorhandler(403)
     def forbidden(e):
         log.error(e)
         return jsonify(error=str(e)), 403
 
-    @app.errorhandler(404)
+    @application.errorhandler(404)
     def page_not_found(e):
         log.error(e)
         return jsonify(error=str(e)), 404
 
-    @app.errorhandler(405)
+    @application.errorhandler(405)
     def not_logged(e):
         log.error(e)
         return jsonify(error=str(e)), 405
 
-    @app.errorhandler(500)
+    @application.errorhandler(500)
     def internal_server_error(e):
         log.error(e)
         return jsonify(error=str(e)), 500
 
-    return app
+    return application
