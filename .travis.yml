@@ -1,0 +1,26 @@
+dist: xenial
+language: python
+cache: pip
+
+node_js:
+    - "8.2.1"
+python:
+    - "3.8.1"
+install:
+    - pip install pipenv --upgrade
+    - pipenv sync -d
+    - npm install newman
+before_script:
+    - python --version
+    - node --version
+    - npm --version
+    - node_modules/.bin/newman --version
+script:
+    - black --check evolux-projet/ app/
+    - python tests.py
+    - node_modules/.bin/newman run postman/Evolux.postman_collection.json -e postman/env_evolux.postman_environment.json
+    - flask db migrate
+    - flask db upgrade
+    - coverage run --source="." test
+after_success:
+    - codecov
