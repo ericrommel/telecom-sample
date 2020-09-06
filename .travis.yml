@@ -1,22 +1,15 @@
-matrix:
-    include
-        - language: python
-        - cache: pip
-        python: "3.8.1"
-
-        language: node.js
-        node_js: "12.18.3"
+language: node_js
+node_js:
+- "12.18.3"
 
 install:
-    - pip install pipenv --upgrade
-    - pipenv sync -d
-    - npm install newman
+- npm install newman
 
 before_script:
-    - python --version
-    - node --version
-    - npm --version
-    - node_modules/.bin/newman --version
+- node --version
+- npm --version
+- node_modules/.bin/newman --version
+
 
 script:
     - black --check evolux-projet/ app/
