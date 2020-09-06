@@ -1,25 +1,32 @@
-dist: xenial
-language: python
-cache: pip
+matrix:
+    include:
+        - language: python
+          cache: pip
+          python: "3.8.1"
+          install:
+            - pip install pipenv --upgrade
+            - pipenv sync -d
+          before_script:
+            - python --version
+          script:
+            - black --check evolux-projet/ app/
+            - python tests.py
+            - node_modules/.bin/newman run postman/Evolux.postman_collection.json -e postman/env_evolux.postman_environment.json
+            - coverage erase
+            - coverage run --source="." test && coverage html
+          after_success:
+            - codecov
 
-node_js:
-    - "12.18.3"
-python:
-    - "3.8.1"
-install:
-    - pip install pipenv --upgrade
-    - pipenv sync -d
-    - npm install newman
-before_script:
-    - python --version
-    - node --version
-    - npm --version
-    - node_modules/.bin/newman --version
-script:
-    - black --check evolux-projet/ app/
-    - python tests.py
-    - node_modules/.bin/newman run postman/Evolux.postman_collection.json -e postman/env_evolux.postman_environment.json
-    - coverage erase
-    - coverage run --source="." test && coverage html
-after_success:
-    - codecov
+        - language: node.js
+          node_js: "12.18.3"
+
+          install:
+            - npm install newman
+
+          before_script:
+            - node --version
+            - npm --version
+            - node_modules/.bin/newman --version
+
+          script:
+            - node_modules/.bin/newman run postman/Evolux.postman_collection.json -e postman/env_evolux.postman_environment.json
