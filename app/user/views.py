@@ -1,8 +1,12 @@
 import json
+import sqlite3
 
+import sqlalchemy
 from flask import abort, jsonify, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy.exc import OperationalError, IntegrityError, InvalidRequestError
+from marshmallow_sqlalchemy import exceptions
+from sqlalchemy import exc
+from sqlalchemy.exc import OperationalError, IntegrityError, InvalidRequestError, SQLAlchemyError
 
 from . import user
 from .. import db
@@ -119,7 +123,6 @@ def add_didnumber():
         setup_price = request.json["setupPrice"]
         currency = request.json["currency"]
     except KeyError as e:
-        log.error(f"KeyError: {e}")
         abort(400, f"There is no key with that value: {e}")
 
     did_number = DidNumber(
@@ -134,13 +137,10 @@ def add_didnumber():
         log.info(f"Add DID number {did_number.value} to the database")
         db.session.add(did_number)
         db.session.commit()
-    except IntegrityError:
-        # in case DID number value already exists
-        log.error(f"DID number value {value} already exists in the database")
-        abort(403, "DID Number value already exists in the database.")
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(403, f"DID Number value {did_number.value} already exists in the database.")
     except Exception as e:
-        # in case DID number value already exists
-        log.error(f"Unknown Exception: {e}")
         abort(500, e)
 
     return did_number_schema.jsonify(did_number), 201
@@ -163,21 +163,16 @@ def edit_did_number(id):
         did_number.setup_price = request.json["setupPrice"]
         did_number.currency = request.json["currency"]
     except KeyError as e:
-        log.error(f"KeyError: {e}")
         abort(400, f"There is no key with that value: {e}")
 
     try:
         # Edit DID number in the database
         log.info(f"Edit DID number {did_number.value} in the database")
-        db.session.add(did_number)
         db.session.commit()
-    except (IntegrityError, InvalidRequestError):
-        # in case DID number value already exists
-        log.error(f"DID Number value {did_number.value} already exists.")
-        abort(400, "DID Number value already exists.")
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(400, f"DID Number value {did_number.value} already exists.")
     except Exception as e:
-        # in case DID number value already exists
-        log.error(f"Unknown Exception: {e}")
         abort(500, e)
 
     return did_number_schema.jsonify(did_number), 200
@@ -197,8 +192,10 @@ def delete_did_number(id):
         log.info(f"Delete {did_number} from the database")
         db.session.delete(did_number)
         db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(400, f"DID Number value {did_number.value} already deleted.")
     except Exception as e:
-        log.error(f"Unknown Error: {e}")
         abort(500, e)
 
     return jsonify({"message": "The DID number has successfully been deleted."}), 200

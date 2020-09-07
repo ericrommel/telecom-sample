@@ -7,7 +7,7 @@ from app.models import Employee, DidNumber
 
 def get_random_string(length: int) -> str:
     letters = string.ascii_lowercase
-    a_string = ''.join(choice(letters) for i in range(length))
+    a_string = "".join(choice(letters) for i in range(length))
     return a_string
 
 
@@ -15,8 +15,8 @@ def get_random_int(length: int) -> int:
     if length > 10:
         length = 10
 
-    numbers = '0123456789'
-    a_string = ''.join(choice(numbers) for i in range(length))
+    numbers = "0123456789"
+    a_string = "".join(choice(numbers) for i in range(length))
     return int(a_string)
 
 
@@ -24,7 +24,7 @@ db.create_all()
 
 for i in range(10):
     username = get_random_string(10)
-    email = f'{username}@gmail.com'
+    email = f"{username}@gmail.com"
     employee = Employee(
         username=username,
         password="123456",
@@ -34,7 +34,7 @@ for i in range(10):
         email=email,
     )
 
-    number = f'+55 {get_random_int(2)} {get_random_int(4)-get_random_int(4)}'
+    number = f"+55 {get_random_int(2)} {get_random_int(4)-get_random_int(4)}"
     did_number = DidNumber(
         value=number,
         monthly_price="0.06",

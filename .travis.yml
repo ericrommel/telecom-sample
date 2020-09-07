@@ -9,10 +9,11 @@ matrix:
           before_script:
             - python --version
           script:
-            - black --check evolux-project/ app/
-            - python tests.py
+            - black --check app/
+            - flake
+            - pytest
             - coverage erase
-            - coverage run --source="." test && coverage html
+            - coverage run --source="." pytest && coverage html
           after_success:
             - codecov
 

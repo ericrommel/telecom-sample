@@ -1,4 +1,4 @@
-from flask import abort, flash, jsonify, request
+from flask import abort, jsonify, request
 from flask_login import login_required, login_user, logout_user
 
 from . import auth

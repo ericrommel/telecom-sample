@@ -3,7 +3,9 @@ class Config(object):
     Common configurations
     """
 
+    # Flask settings
     DEBUG = True
+    TESTING = False
 
 
 class DevelopmentConfig(Config):

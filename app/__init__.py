@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, Response
+from flask import Flask, jsonify
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -16,21 +16,33 @@ ma = Marshmallow()
 login_manager = LoginManager()
 
 
-def create_app(config_name):
-    log.info("Create app")
-    if os.getenv('FLASK_CONFIG') == 'production':
+def create_app(config_name=None):
+    log.info(f"Create app (config_name: {config_name})")
+    if os.getenv("FLASK_CONFIG") == "production":
         app = Flask(__name__)
         log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
         app.config.update(
-            SECRET_KEY=os.getenv('SECRET_KEY'),
-            SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI'),
-            SQLALCHEMY_TRACK_MODIFICATIONS=os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS')
+            SECRET_KEY=os.getenv("SECRET_KEY"),
+            SQLALCHEMY_DATABASE_URI=os.getenv("SQLALCHEMY_DATABASE_URI"),
+            SQLALCHEMY_TRACK_MODIFICATIONS=os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS"),
         )
     else:
         app = Flask(__name__, instance_relative_config=True)
         log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
-        app.config.from_object(app_config[config_name])
-        app.config.from_pyfile("config.py")  # from /instance
+        if config_name is None:
+            log.info("Load the instance config, if it exists, when not testing")
+            app.config.from_pyfile("config.py")
+        else:
+            log.info(f"Load the config name: {config_name}")
+            app.config.from_mapping(config_name)
+
+    # ensure the instance folder exists
+    try:
+        log.info("Create instance folder")
+        os.makedirs(app.instance_path)
+    except OSError as e:
+        log.error(f"Error: {e}")
+        pass
 
     log.info("Initialize the application for the use with its setup DB")
     db.init_app(app)

@@ -19,6 +19,10 @@ flask-migrate = "*"
 colorlog = "*"
 flask-testing = "*"
 coverage = "*"
+pytest = "*"
+app = {editable = true, path = "."}
+setuptools = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.8"
