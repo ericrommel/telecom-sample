@@ -9,9 +9,8 @@ matrix:
           before_script:
             - python --version
           script:
-            - black --check evolux-projet/ app/
+            - black --check evolux-project/ app/
             - python tests.py
-            - node_modules/.bin/newman run postman/Evolux.postman_collection.json -e postman/env_evolux.postman_environment.json
             - coverage erase
             - coverage run --source="." test && coverage html
           after_success:
