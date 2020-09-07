@@ -156,39 +156,3 @@ def json_of_response(response):
     """
 
     return json.loads(response.data.decode("utf8"))
-
-
-# def signup(app, a_dict):
-#     """
-#     Sign up request
-#     """
-#
-#     with app.test_client() as client:
-#         return client.post(
-#             get_url(app=app, url="auth.signup"),
-#             data=json.dumps(a_dict),
-#             content_type="application/json",
-#             follow_redirects=True,
-#         )
-#
-#
-# def login(app, a_dict):
-#     """
-#     Logo in request
-#     """
-#
-#     with app.client(app) as client:
-#         return client.post(
-#             get_url(app=app, url="auth.login"),
-#             data=json.dumps(a_dict),
-#             content_type="application/json",
-#             follow_redirects=True
-#         )
-#
-#
-# def logout(app):
-#     """
-#     Log out request
-#     """
-#     with app.test_client() as client:
-#         return client.get(url_for("auth.logout"), follow_redirects=True)
