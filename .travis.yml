@@ -10,7 +10,7 @@ matrix:
             - python --version
           script:
             - black --check app/
-            - flake
+            - flake8
             - pytest
             - coverage erase
             - coverage run --source="." pytest && coverage html

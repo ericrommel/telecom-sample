@@ -1,5 +1,5 @@
-import logging
 import datetime
+import logging
 import sys
 
 is_colorlog_presented = True

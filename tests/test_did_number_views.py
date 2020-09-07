@@ -1,6 +1,5 @@
-import json
-
 from flask import redirect
+
 from tests.conftest import get_url
 
 

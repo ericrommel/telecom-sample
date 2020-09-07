@@ -1,17 +1,11 @@
-import json
-import sqlite3
-
-import sqlalchemy
 from flask import abort, jsonify, request, url_for
 from flask_login import current_user, login_required
-from marshmallow_sqlalchemy import exceptions
-from sqlalchemy import exc
-from sqlalchemy.exc import OperationalError, IntegrityError, InvalidRequestError, SQLAlchemyError
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
+from log import Log
 from . import user
 from .. import db
 from ..models import DidNumber, did_number_schema, did_numbers_schema, Employee, employee_schema, employees_schema
-from log import Log
 
 log = Log("evolux-project").get_logger(logger_name="user-views")
 

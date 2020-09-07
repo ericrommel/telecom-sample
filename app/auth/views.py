@@ -1,11 +1,10 @@
 from flask import abort, jsonify, request
 from flask_login import login_required, login_user, logout_user
 
+from log import Log
 from . import auth
 from .. import db
-
 from ..models import Employee, employee_schema
-from log import Log
 
 log = Log("evolux-project").get_logger(logger_name="auth-views")
 

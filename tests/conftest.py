@@ -1,7 +1,6 @@
 import json
-import logging
 import os
-import tempfile
+
 import pytest
 from flask import url_for
 
