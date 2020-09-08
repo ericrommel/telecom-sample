@@ -75,8 +75,8 @@ def app():
     Create app with a database test
     """
 
-    project_dir = os.path.dirname(os.path.abspath(__file__))
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(project_dir, 'telecom-test.db')}"
+    # project_dir = os.path.dirname(os.path.abspath(__file__))
+    SQLALCHEMY_DATABASE_URI = "sqlite:///'telecom-test.db'}"
 
     app = create_app()
     app.config.from_object("config.TestingConfig")
