@@ -1,3 +1,6 @@
+import os
+
+
 class Config(object):
     """
     Common configurations
@@ -6,6 +9,7 @@ class Config(object):
     # Flask settings
     DEBUG = True
     TESTING = False
+    DATABASE_URI = 'sqlite:///:memory:'
 
 
 class DevelopmentConfig(Config):
@@ -22,6 +26,7 @@ class ProductionConfig(Config):
     """
 
     DEBUG = False
+    DATABASE_URI = os.getenv('DATABASE_URI')
 
 
 class TestingConfig(Config):
