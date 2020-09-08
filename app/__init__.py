@@ -19,6 +19,7 @@ login_manager = LoginManager()
 def create_app(config_name=None):
     log.info(f"Create app (config_name: {config_name})")
     if os.getenv("FLASK_CONFIG") == "production":
+        log.info("Executing in PRODUCTION")
         app = Flask(__name__)
         log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
         app.config.update(
@@ -28,16 +29,21 @@ def create_app(config_name=None):
         )
     else:
         app = Flask(__name__, instance_relative_config=True)
-        log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
-        if config_name is None:
-            log.info("Load the instance config, if it exists, when not testing")
-            try:
-                app.config.from_pyfile("config.py")
-            except Exception:
+
+        if config_name:
+            if config_name.get('TESTING'):
+                log.info("Executing in TESTING")
+                app.config.from_object('config.TestingConfig')
+            else:
+                log.info("Executing in DEVELOPMENT")
                 app.config.from_object('config.DevelopmentConfig')
-        else:
-            log.info(f"Load the config name: {config_name}")
-            app.config.from_mapping(config_name)
+
+        app.config.from_mapping(
+            SECRET_KEY='$dev_or_test$',
+            DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        )
+        log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
+        app.config.from_pyfile("config.py")
 
     # ensure the instance folder exists
     try:

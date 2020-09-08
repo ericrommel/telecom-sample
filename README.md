@@ -16,26 +16,34 @@ This project is using pipenv as a packaging tool. Learn more about pipenv here (
 
     $ pip install pipenv
     $ pipenv sync -d
+    $ pipenv shell
 
-It will install all requirements needed.
+It will install all requirements needed and create a virtual environment.
 
 
 Run
 ---
+Note: The pipenv virtual environment should be done.
 
 Set the environment variables::
 
     $ export FLASK_CONFIG=development
     $ export FLASK_APP=run.py
-    $ flask init-db
-    $ flask run
-
+    
 Or on Windows cmd::
 
     > set FLASK_CONFIG=development
     > set FLASK_APP=run.py
-    > flask init-db
-    > flask run
+
+Create the database::
+
+    $ flask db init
+    $ flask db migrate
+    $ flask db upgrade
+
+Run the application::
+
+    $ flask run
 
 Open http://127.0.0.1:5000 in a browser.
 
