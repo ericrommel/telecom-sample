@@ -1,15 +1,13 @@
 version: '3.7'
-
 services:
-
-  users:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - .:/usr/src/app
+      - /c/users:/users
     ports:
-      - 5000:5000
+      - "5000:5000"
     environment:
       - FLASK_CONFIG=development
       - FLASK_APP=run.py

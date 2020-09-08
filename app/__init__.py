@@ -31,7 +31,10 @@ def create_app(config_name=None):
         log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
         if config_name is None:
             log.info("Load the instance config, if it exists, when not testing")
-            app.config.from_pyfile("config.py")
+            try:
+                app.config.from_pyfile("config.py")
+            except Exception:
+                app.config.from_object('config.DevelopmentConfig')
         else:
             log.info(f"Load the config name: {config_name}")
             app.config.from_mapping(config_name)
