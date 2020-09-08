@@ -1,8 +1,21 @@
-FROM python:3.8
-COPY . .
-WORKDIR . .
+# pull official base image
+FROM python:3.8.1-alpine
+
+# set working directory
+WORKDIR /usr/src/app
+
+# set environment varibles
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# add and install requirements
 RUN ["pip", "install", "pipenv"]
-ENV FLASK_APP=run.py
-EXPOSE 5000
 RUN ["pipenv", "install"]
+
+# add app
+COPY . .
+
+EXPOSE 5000
+
+# run server
 CMD ["flask", "run", "--host", "0.0.0.0"]
