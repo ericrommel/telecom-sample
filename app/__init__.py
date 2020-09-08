@@ -31,13 +31,17 @@ def create_app(config_name=None):
         app = Flask(__name__, instance_relative_config=True)
 
         if config_name:
-            if config_name.get('TESTING'):
-                log.info("Executing in TESTING")
-                app.config.from_object('config.TestingConfig')
+            if isinstance(config_name, dict):
+                if config_name.get('TESTING'):
+                    log.info("Executing in TESTING (by server)")
+                    app.config.from_object('config.TestingConfig')
             else:
-                log.info("Executing in DEVELOPMENT")
-                app.config.from_object('config.DevelopmentConfig')
-
+                if config_name == "development":
+                    log.info("Executing in DEVELOPMENT")
+                    app.config.from_object('config.DevelopmentConfig')
+                else:
+                    log.info("Executing in TESTING (by user)")
+                    app.config.from_object('config.TestingConfig')
         app.config.from_mapping(
             SECRET_KEY='$dev_or_test$',
             DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
