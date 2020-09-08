@@ -29,7 +29,7 @@ Set the environment variables::
 
     $ export FLASK_CONFIG=development
     $ export FLASK_APP=run.py
-    
+
 Or on Windows cmd::
 
     > set FLASK_CONFIG=development

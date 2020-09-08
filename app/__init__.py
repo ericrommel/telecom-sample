@@ -32,19 +32,19 @@ def create_app(config_name=None):
 
         if config_name:
             if isinstance(config_name, dict):
-                if config_name.get('TESTING'):
+                if config_name.get("TESTING"):
                     log.info("Executing in TESTING (by server)")
-                    app.config.from_object('config.TestingConfig')
+                    app.config.from_object("config.TestingConfig")
             else:
                 if config_name == "development":
                     log.info("Executing in DEVELOPMENT")
-                    app.config.from_object('config.DevelopmentConfig')
+                    app.config.from_object("config.DevelopmentConfig")
                 else:
                     log.info("Executing in TESTING (by user)")
-                    app.config.from_object('config.TestingConfig')
+                    app.config.from_object("config.TestingConfig")
         app.config.from_mapping(
-            SECRET_KEY='$dev_or_test$',
-            DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+            SECRET_KEY="$dev_or_test$",
+            DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
         )
         log.info(f"Get configs from {os.getenv('FLASK_CONFIG')}")
         app.config.from_pyfile("config.py")
